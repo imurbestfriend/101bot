@@ -20,8 +20,11 @@ async def make_report(message: Message):
     await message.answer("Формирую отчёт, это может занять несколько минут…")
     try:
         report_path = await generate_report()
-    except Exception as error:
+    except Exception:
         logger.exception("Ошибка при формировании отчета")
-        await message.answer(f"Не удалось сформировать отчёт:\n{error}")
+        await message.answer(
+            "Не удалось сформировать отчёт. Попробуйте позже — "
+            "если ошибка повторяется, обратитесь к администратору."
+        )
         return
     await message.answer_document(FSInputFile(report_path))
