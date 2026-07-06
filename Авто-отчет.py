@@ -31,16 +31,18 @@ if os.path.exists(save_dir):
     shutil.rmtree(save_dir)
 os.makedirs(save_dir, exist_ok=True)
 
-def download(url, name):
+def download(url, name, timeout=10, retries=0):
     path = os.path.join(save_dir, name)
-    try:
-        r = requests.get(url, timeout=10)
-        r.raise_for_status()
-        with open(path, 'wb') as f:
-            f.write(r.content)
-        return True
-    except:
-        return False
+    for attempt in range(retries + 1):
+        try:
+            r = requests.get(url, timeout=timeout)
+            r.raise_for_status()
+            with open(path, 'wb') as f:
+                f.write(r.content)
+            return True
+        except Exception as e:
+            print(f"⚠️ Не удалось скачать {name} (попытка {attempt + 1}): {e}")
+    return False
 
 # Определяем актуальную дату по уже скачанным архивам
 existing_dates = [re.search(r'(\d{8})', f).group(1) for f in os.listdir(save_dir) if re.match(r'101-\d{8}\.rar', f)]
@@ -84,7 +86,13 @@ else:
         print("❌ Не удалось скачать ни один архив 101 формы с сайта ЦБ")
         sys.exit(1)
 
-download("https://cbr.ru/Content/Document/File/115862/obs_tabl20%D1%81.xlsx", "obs_tabl20с.xlsx")
+if not download(
+    "https://cbr.ru/Content/Document/File/115862/obs_tabl20%D1%81.xlsx",
+    "obs_tabl20с.xlsx",
+    timeout=60, retries=2,
+):
+    print("❌ Не удалось скачать файл ОБС (Динамические ряды) с сайта ЦБ")
+    sys.exit(1)
 
 
 # ### Распаковка архивов из загрузок в папку "101_rar"
