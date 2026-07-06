@@ -1,0 +1,285 @@
+2026-07-02 13:42:58 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:42:58 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:42:58 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-02 13:42:58 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-02 13:42:58 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-02 13:42:58 [INFO] aiogram.dispatcher: Start polling
+2026-07-02 13:42:58 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 13:42:58 [INFO] aiogram.event: Update id=692540295 is not handled. Duration 226 ms by bot id=8823952434
+2026-07-02 13:43:00 [INFO] aiogram.event: Update id=692540294 is handled. Duration 1949 ms by bot id=8823952434
+2026-07-02 13:43:05 [INFO] aiogram.event: Update id=692540296 is handled. Duration 118 ms by bot id=8823952434
+2026-07-02 13:43:10 [INFO] aiogram.event: Update id=692540297 is handled. Duration 2983 ms by bot id=8823952434
+2026-07-02 13:43:25 [ERROR] services.report: Скрипт отчета завершился с кодом 1:
+Traceback (most recent call last):
+  File "C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py", line 38, in <module>
+    actual_date = max([re.search(r'(\d{8})', f).group(1) for f in os.listdir(save_dir) if re.match(r'101-\d{8}\.rar', f)])
+ValueError: max() iterable argument is empty
+
+2026-07-02 13:43:25 [ERROR] handlers.user_messages: Ошибка при формировании отчета
+Traceback (most recent call last):
+  File "C:\Users\whywh\Desktop\bot_cbr\handlers\user_messages.py", line 22, in make_report
+    report_path = await generate_report()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\whywh\Desktop\bot_cbr\services\report.py", line 49, in generate_report
+    raise RuntimeError(
+        f"Скрипт отчета завершился с ошибкой (код {process.returncode}).\n{output[-1000:]}"
+    )
+RuntimeError: Скрипт отчета завершился с ошибкой (код 1).
+Traceback (most recent call last):
+  File "C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py", line 38, in <module>
+    actual_date = max([re.search(r'(\d{8})', f).group(1) for f in os.listdir(save_dir) if re.match(r'101-\d{8}\.rar', f)])
+ValueError: max() iterable argument is empty
+
+2026-07-02 13:43:25 [INFO] aiogram.event: Update id=692540298 is handled. Duration 1335 ms by bot id=8823952434
+2026-07-02 13:45:22 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-02 13:45:22 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-02 13:45:22 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-02 13:45:22 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 13:51:34 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:51:34 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:51:34 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-02 13:51:34 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-02 13:51:34 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-02 13:51:34 [INFO] aiogram.dispatcher: Start polling
+2026-07-02 13:51:34 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 13:51:43 [INFO] aiogram.event: Update id=692540299 is handled. Duration 283 ms by bot id=8823952434
+2026-07-02 13:51:46 [INFO] aiogram.event: Update id=692540300 is handled. Duration 1934 ms by bot id=8823952434
+2026-07-02 13:52:00 [ERROR] services.report: Скрипт отчета завершился с кодом 1:
+Локальные архивы 101 не найдены — скачиваем последние месяцы с сайта ЦБ...
+Traceback (most recent call last):
+  File "C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py", line 229, in <module>
+    df_acc = pd.read_excel(BASE_DIR / 'Счета.xlsx') # <--------------------- Файл "Счета.xlsx" нужен для фильтрации, должен лежать в директории скрипта
+             ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\excel\_base.py", line 495, in read_excel
+    io = ExcelFile(
+        io,
+    ...<2 lines>...
+        engine_kwargs=engine_kwargs,
+    )
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\excel\_base.py", line 1550, in __init__
+    ext = inspect_excel_format(
+        content_or_path=path_or_buffer, storage_options=storage_options
+    )
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\excel\_base.py", line 1402, in inspect_excel_format
+    with get_handle(
+         ~~~~~~~~~~^
+        content_or_path, "rb", storage_options=storage_options, is_text=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as handle:
+    ^
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\whywh\\Desktop\\bot_cbr\\Счета.xlsx'
+
+2026-07-02 13:52:00 [ERROR] handlers.user_messages: Ошибка при формировании отчета
+Traceback (most recent call last):
+  File "C:\Users\whywh\Desktop\bot_cbr\handlers\user_messages.py", line 22, in make_report
+    report_path = await generate_report()
+                  ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\whywh\Desktop\bot_cbr\services\report.py", line 49, in generate_report
+    raise RuntimeError(
+        f"Скрипт отчета завершился с ошибкой (код {process.returncode}).\n{output[-1000:]}"
+    )
+RuntimeError: Скрипт отчета завершился с ошибкой (код 1).
+ad_excel
+    io = ExcelFile(
+        io,
+    ...<2 lines>...
+        engine_kwargs=engine_kwargs,
+    )
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\excel\_base.py", line 1550, in __init__
+    ext = inspect_excel_format(
+        content_or_path=path_or_buffer, storage_options=storage_options
+    )
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\excel\_base.py", line 1402, in inspect_excel_format
+    with get_handle(
+         ~~~~~~~~~~^
+        content_or_path, "rb", storage_options=storage_options, is_text=False
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as handle:
+    ^
+  File "C:\Users\whywh\AppData\Local\Programs\Python\Python313\Lib\site-packages\pandas\io\common.py", line 882, in get_handle
+    handle = open(handle, ioargs.mode)
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\whywh\\Desktop\\bot_cbr\\Счета.xlsx'
+
+2026-07-02 13:52:00 [INFO] aiogram.event: Update id=692540301 is handled. Duration 11998 ms by bot id=8823952434
+2026-07-02 13:52:54 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-02 13:52:54 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-02 13:52:54 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-02 13:52:54 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 13:53:00 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:53:00 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 13:53:00 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-02 13:53:00 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-02 13:53:00 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-02 13:53:00 [INFO] aiogram.dispatcher: Start polling
+2026-07-02 13:53:01 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 13:53:04 [INFO] aiogram.event: Update id=692540302 is handled. Duration 285 ms by bot id=8823952434
+2026-07-02 13:53:10 [INFO] aiogram.event: Update id=692540303 is handled. Duration 4165 ms by bot id=8823952434
+2026-07-02 13:53:22 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:285: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:390: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+
+❌ НОВЫЕ ДАННЫЕ ЕЩЕ НЕ ПОЯВИЛИСЬ
+
+2026-07-02 13:53:22 [INFO] aiogram.event: Update id=692540304 is handled. Duration 9872 ms by bot id=8823952434
+2026-07-02 14:40:53 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:285: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:390: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+
+❌ НОВЫЕ ДАННЫЕ ЕЩЕ НЕ ПОЯВИЛИСЬ
+
+2026-07-02 14:40:53 [INFO] aiogram.event: Update id=692540305 is handled. Duration 19405 ms by bot id=8823952434
+2026-07-02 14:40:57 [INFO] aiogram.event: Update id=692540306 is handled. Duration 1956 ms by bot id=8823952434
+2026-07-02 14:53:00 [INFO] apscheduler.executors.default: Running job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 15:53:00 MSK)" (scheduled at 2026-07-02 14:53:00.954289+03:00)
+2026-07-02 14:53:00 [WARNING] handlers.notification: HEALTH_CHECK_USER_ID не задан, пропуск health_check
+2026-07-02 14:53:00 [INFO] apscheduler.executors.default: Job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 15:53:00 MSK)" executed successfully
+2026-07-02 15:15:45 [INFO] aiogram.event: Update id=692540307 is not handled. Duration 0 ms by bot id=8823952434
+2026-07-02 15:53:00 [INFO] apscheduler.executors.default: Running job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 16:53:00 MSK)" (scheduled at 2026-07-02 15:53:00.954289+03:00)
+2026-07-02 15:53:00 [WARNING] handlers.notification: HEALTH_CHECK_USER_ID не задан, пропуск health_check
+2026-07-02 15:53:00 [INFO] apscheduler.executors.default: Job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 16:53:00 MSK)" executed successfully
+2026-07-02 16:53:00 [INFO] apscheduler.executors.default: Running job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 17:53:00 MSK)" (scheduled at 2026-07-02 16:53:00.954289+03:00)
+2026-07-02 16:53:00 [WARNING] handlers.notification: HEALTH_CHECK_USER_ID не задан, пропуск health_check
+2026-07-02 16:53:00 [INFO] apscheduler.executors.default: Job "health_check (trigger: interval[1:00:00], next run at: 2026-07-02 17:53:00 MSK)" executed successfully
+2026-07-02 17:01:38 [INFO] aiogram.event: Update id=692540308 is handled. Duration 284 ms by bot id=8823952434
+2026-07-02 17:01:42 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-02 17:01:42 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-02 17:01:42 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-02 17:01:42 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 17:04:58 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 17:04:58 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-02 17:04:58 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-02 17:04:58 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-02 17:04:58 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-02 17:04:58 [INFO] aiogram.dispatcher: Start polling
+2026-07-02 17:04:59 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-02 17:05:00 [INFO] aiogram.event: Update id=692540309 is handled. Duration 317 ms by bot id=8823952434
+2026-07-02 17:05:04 [INFO] aiogram.event: Update id=692540310 is handled. Duration 2218 ms by bot id=8823952434
+2026-07-02 17:05:18 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:295: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:400: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+Локальные архивы 101 не найдены — скачиваем последние месяцы с сайта ЦБ...
+
+2026-07-02 17:05:19 [INFO] aiogram.event: Update id=692540311 is handled. Duration 12830 ms by bot id=8823952434
+2026-07-02 17:06:18 [INFO] aiogram.event: Update id=692540312 is handled. Duration 1835 ms by bot id=8823952434
+2026-07-02 17:06:20 [INFO] aiogram.event: Update id=692540313 is not handled. Duration 0 ms by bot id=8823952434
+2026-07-02 17:06:58 [INFO] aiogram.event: Update id=692540314 is not handled. Duration 0 ms by bot id=8823952434
+2026-07-02 17:07:01 [INFO] aiogram.event: Update id=692540315 is handled. Duration 116 ms by bot id=8823952434
+2026-07-02 17:07:17 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:295: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:400: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+Локальные архивы 101 не найдены — скачиваем последние месяцы с сайта ЦБ...
+
+2026-07-02 17:07:18 [INFO] aiogram.event: Update id=692540316 is handled. Duration 13727 ms by bot id=8823952434
+2026-07-02 17:08:45 [INFO] aiogram.event: Update id=692540317 is not handled. Duration 0 ms by bot id=8823952434
+2026-07-02 17:11:54 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-02 17:11:54 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-02 17:11:54 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-02 17:11:54 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 11:50:20 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 11:50:20 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 11:50:20 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-06 11:50:20 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-06 11:50:20 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-06 11:50:20 [INFO] aiogram.dispatcher: Start polling
+2026-07-06 11:50:20 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 11:50:52 [INFO] aiogram.event: Update id=692540318 is handled. Duration 2560 ms by bot id=8823952434
+2026-07-06 11:52:55 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:295: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:400: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:494: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+Локальные архивы 101 не найдены — скачиваем последние месяцы с сайта ЦБ...
+
+2026-07-06 11:52:55 [INFO] aiogram.event: Update id=692540319 is handled. Duration 119368 ms by bot id=8823952434
+2026-07-06 11:55:36 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-06 11:55:36 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-06 11:55:36 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-06 11:55:36 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 11:57:38 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 11:57:38 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 11:57:38 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-06 11:57:38 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-06 11:57:38 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-06 11:57:38 [INFO] aiogram.dispatcher: Start polling
+2026-07-06 11:57:39 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 11:57:43 [INFO] aiogram.event: Update id=692540320 is handled. Duration 1929 ms by bot id=8823952434
+2026-07-06 11:57:58 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:285: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:390: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:484: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+
+2026-07-06 11:57:58 [INFO] aiogram.event: Update id=692540321 is handled. Duration 12817 ms by bot id=8823952434
+2026-07-06 12:02:03 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-06 12:02:03 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-06 12:02:03 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-06 12:02:03 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 12:05:50 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 12:05:50 [INFO] apscheduler.scheduler: Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-07-06 12:05:50 [INFO] apscheduler.scheduler: Added job "check_for_updates" to job store "default"
+2026-07-06 12:05:50 [INFO] apscheduler.scheduler: Added job "health_check" to job store "default"
+2026-07-06 12:05:50 [INFO] apscheduler.scheduler: Scheduler started
+2026-07-06 12:05:50 [INFO] aiogram.dispatcher: Start polling
+2026-07-06 12:05:50 [INFO] aiogram.dispatcher: Run polling for bot @cbr_check101bot id=8823952434 - 'test101'
+2026-07-06 12:05:55 [INFO] aiogram.event: Update id=692540322 is handled. Duration 2033 ms by bot id=8823952434
+2026-07-06 12:06:25 [INFO] services.report: Скрипт отчета выполнен успешно:
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:290: FutureWarning: DataFrameGroupBy.apply operated on the grouping columns. This behavior is deprecated, and in a future version of pandas the grouping columns will be excluded from the operation. Either pass `include_groups=False` to exclude the groupings or explicitly select the grouping columns after groupby to silence this warning.
+  dole_df = (prosr.groupby("Дата").apply(
+C:\Users\whywh\Desktop\bot_cbr\Авто-отчет.py:395: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df_top['Наименование банка'] = pd.Categorical(df_top['Наименование банка'], categories=top_banks, ordered=True)
+Локальные архивы 101 не найдены — скачиваем последние месяцы с сайта ЦБ...
+
+2026-07-06 12:06:25 [INFO] aiogram.event: Update id=692540323 is handled. Duration 27582 ms by bot id=8823952434
+2026-07-06 12:06:46 [INFO] aiogram.dispatcher: Polling stopped
+2026-07-06 12:06:46 [ERROR] aiogram.dispatcher: Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2026-07-06 12:06:46 [WARNING] aiogram.dispatcher: Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8823952434)
+2026-07-06 12:06:46 [INFO] aiogram.dispatcher: Polling stopped for bot @cbr_check101bot id=8823952434 - 'test101'
