@@ -4,11 +4,41 @@ import logging
 from datetime import datetime
 from json import JSONDecodeError
 from aiogram import Bot, Router
-from config import DATES_JSON_PATH, USERS_JSON_PATH, HEALTH_CHECK_USER_ID
+from config import (
+    DATES_JSON_PATH,
+    USERS_JSON_PATH,
+    HEALTH_CHECK_USER_ID,
+)
 from services.parse_data import fetch_data
+from services.check_101 import newest_available_101, REPORT_101_PAGE_URL
 
 router = Router()
 logger = logging.getLogger(__name__)
+
+# Синтетический "url" записи 101-отчёта внутри dates.json.
+# Не совпадает с реальными страницами из TRACKED_URLS, поэтому 101 хранится
+# в общем файле, но обрабатывается отдельной веткой.
+REPORT_101_KEY = "cbr-101-report"
+
+
+def find_record(data, url):
+    if not isinstance(data, list):
+        return None
+    for item in data:
+        if isinstance(item, dict) and item.get("url") == url:
+            return item
+    return None
+
+
+def upsert_record(data, record):
+    if not isinstance(data, list):
+        data = []
+    for index, item in enumerate(data):
+        if isinstance(item, dict) and item.get("url") == record["url"]:
+            data[index] = record
+            return data
+    data.append(record)
+    return data
 
 
 def read_json(path):
@@ -19,6 +49,11 @@ def read_json(path):
         
     except (FileNotFoundError, JSONDecodeError):
         return []
+
+
+def write_json(path, data):
+    with open(path, "w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
 
 
 def get_users_id():
@@ -52,22 +87,90 @@ async def check_for_updates(bot: Bot):
     await fetch_data()
 
     new_data = await asyncio.to_thread(read_json, DATES_JSON_PATH)
-    
-    
-    # print(f'ZIP {list(zip(old_data, new_data))} \n')
 
-    for old_item, new_item in zip(old_data, new_data):
-        # print(f'OLD ITEM: {old_item}')
-        # print(f'NEW ITEM: {new_item}')
-        if old_item["url"] == new_item["url"] and old_item["last_update"] != new_item["last_update"]:
+    # Сопоставляем по url, а не по индексу: в dates.json теперь может быть
+    # запись 101-отчёта, которую fetch_data не трогает. Её пропускаем —
+    # за 101 отвечает check_new_101_report.
+    old_by_url = {
+        item["url"]: item
+        for item in old_data
+        if isinstance(item, dict) and "url" in item
+    }
+
+    for new_item in new_data:
+        if not isinstance(new_item, dict) or "url" not in new_item:
+            continue
+        if new_item["url"] == REPORT_101_KEY:
+            continue
+
+        old_item = old_by_url.get(new_item["url"])
+        if old_item and old_item.get("last_update") != new_item.get("last_update"):
             for user_id in users_id:
                 await bot.send_message(
                     chat_id=user_id,
-                    text=f"Обновление: {old_item['url']}: {old_item['last_update']} -> {new_item['last_update']}",
+                    text=f"Обновление: {new_item['url']}: {old_item.get('last_update')} -> {new_item.get('last_update')}",
                 )
                 logger.info(
                     "Sent update notification to user_id=%s for url=%s",
                     user_id,
-                    old_item["url"],
+                    new_item["url"],
                 )
+
+
+def _build_101_record(newest: str) -> dict:
+    """Собирает запись 101-отчёта для dates.json."""
+    return {
+        "url": REPORT_101_KEY,
+        "title": "Форма 101 (оборотная ведомость КО)",
+        "last_update": datetime.strptime(newest, "%Y%m%d").strftime("%d.%m.%Y"),
+        "raw_date": newest,
+        "status": "ok",
+        "checked_at": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "page_url": REPORT_101_PAGE_URL,
+    }
+
+
+async def check_new_101_report(bot: Bot):
+    """Отдельная ветка: следим за появлением новых 101-архивов на сайте ЦБ.
+
+    Состояние храним в dates.json той же записью, что и страницы (url =
+    REPORT_101_KEY), но сравниваем по raw_date (YYYYMMDD). При первом запуске
+    фиксируем базовую линию без рассылки, дальше уведомляем всех пользователей
+    только при появлении более свежего архива.
+    """
+    data = await asyncio.to_thread(read_json, DATES_JSON_PATH)
+    record = find_record(data, REPORT_101_KEY)
+    last_seen = record.get("raw_date") if isinstance(record, dict) else None
+
+    newest = await newest_available_101()
+    if not newest:
+        logger.info("101: доступных архивов не найдено")
+        return
+
+    new_record = _build_101_record(newest)
+
+    if last_seen is None:
+        data = upsert_record(data, new_record)
+        await asyncio.to_thread(write_json, DATES_JSON_PATH, data)
+        logger.info("101: установлена базовая линия %s (без рассылки)", newest)
+        return
+
+    if newest <= last_seen:
+        # Нового архива нет — обновляем только метку последней проверки.
+        data = upsert_record(data, new_record)
+        await asyncio.to_thread(write_json, DATES_JSON_PATH, data)
+        logger.info("101: нового нет (последний известный %s)", last_seen)
+        return
+
+    users_id = await asyncio.to_thread(get_users_id)
+    human_date = new_record["last_update"]
+    for user_id in users_id:
+        await bot.send_message(
+            chat_id=user_id,
+            text=f"Появился новый 101-отчёт на ЦБ: {human_date}\n{REPORT_101_PAGE_URL}",
+        )
+        logger.info("101: уведомление отправлено user_id=%s date=%s", user_id, newest)
+
+    data = upsert_record(data, new_record)
+    await asyncio.to_thread(write_json, DATES_JSON_PATH, data)
             

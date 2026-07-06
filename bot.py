@@ -6,7 +6,7 @@ from aiogram import Bot, Dispatcher
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dotenv import load_dotenv
 from handlers.commands import router as commands
-from handlers.notification import check_for_updates, health_check
+from handlers.notification import check_for_updates, check_new_101_report, health_check
 from handlers.user_messages import router as user_messages
 
 load_dotenv()
@@ -42,7 +42,8 @@ async def main():
     setup_logging()
     bot = Bot(token=TOKEN)
 
-    scheduler.add_job(check_for_updates, "cron", hour="9, 18", minute=40, args=[bot])
+    scheduler.add_job(check_for_updates, "cron", hour="10, 13, 17", minute=0, args=[bot])
+    scheduler.add_job(check_new_101_report, "cron", hour="10, 13, 17", minute=5, args=[bot])
     scheduler.add_job(health_check, "interval", hours=1, args=[bot])
     # scheduler.add_job(check_for_updates, "interval", seconds=10, args=[bot])
     scheduler.start()
