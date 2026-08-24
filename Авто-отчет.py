@@ -17,6 +17,12 @@ from openpyxl.formatting.rule import ColorScaleRule
 import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+from dotenv import load_dotenv
+
+# Источник данных: по умолчанию настоящий ЦБ, для тестов можно подменить на
+# локальный симулятор через переменную окружения CBR_BASE_URL (см. web/cbr_sim.py).
+load_dotenv()
+CBR_BASE_URL = os.getenv("CBR_BASE_URL", "https://cbr.ru").rstrip("/")
 
 
 # ### Скачивание архивов 101 формы и данных ОБС
@@ -26,10 +32,20 @@ from dateutil.relativedelta import relativedelta
 BASE_DIR = Path(__file__).resolve().parent
 save_dir = str(BASE_DIR / "Downloads") # <--------------------- Папка для скачивания архивов (внутри директории скрипта)
 
-# Чистим папку загрузок перед каждым запуском, чтобы работать только со свежими файлами.
-if os.path.exists(save_dir):
-    shutil.rmtree(save_dir)
+# Не удаляем архивы, а держим в папке загрузок только несколько последних месяцев:
+# так не нужно каждый запуск перекачивать всё заново, старые файлы не копятся бесконечно,
+# и уходит гонка при shutil.rmtree, если отчёт случайно запустят в два потока.
+KEEP_MONTHS = 4  # текущий месяц + запас на приросты за 3 месяца
 os.makedirs(save_dir, exist_ok=True)
+
+_existing_rars = sorted(
+    f for f in os.listdir(save_dir) if re.match(r'101-\d{8}\.rar$', f)
+)
+for _old in _existing_rars[:-KEEP_MONTHS]:
+    try:
+        os.remove(os.path.join(save_dir, _old))
+    except OSError as e:
+        print(f"⚠️ Не удалось удалить старый архив {_old}: {e}")
 
 def download(url, name, timeout=10, retries=0):
     path = os.path.join(save_dir, name)
@@ -53,7 +69,7 @@ if existing_dates:
     new_date = (datetime.strptime(actual_date, "%Y%m%d") + relativedelta(months=1)).strftime("%Y%m%d")
 
     try:
-        if not download(f"https://cbr.ru/vfs/credit/forms/101-{new_date}.rar", f"101-{new_date}.rar"):
+        if not download(f"{CBR_BASE_URL}/vfs/credit/forms/101-{new_date}.rar", f"101-{new_date}.rar"):
             raise Exception("101 архив не скачался")
 
         actual_date = new_date
@@ -76,7 +92,7 @@ else:
         if downloaded >= months_needed:
             break
         candidate = probe.strftime("%Y%m%d")
-        if download(f"https://cbr.ru/vfs/credit/forms/101-{candidate}.rar", f"101-{candidate}.rar"):
+        if download(f"{CBR_BASE_URL}/vfs/credit/forms/101-{candidate}.rar", f"101-{candidate}.rar"):
             if actual_date is None:
                 actual_date = candidate  # самый свежий доступный месяц
             downloaded += 1
@@ -87,7 +103,7 @@ else:
         sys.exit(1)
 
 if not download(
-    "https://cbr.ru/Content/Document/File/115862/obs_tabl20%D1%81.xlsx",
+    f"{CBR_BASE_URL}/Content/Document/File/115862/obs_tabl20%D1%81.xlsx",
     "obs_tabl20с.xlsx",
     timeout=60, retries=2,
 ):

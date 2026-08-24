@@ -12,6 +12,12 @@ USERS_JSON_PATH = DATA_DIR / "users.json"
 
 HEALTH_CHECK_USER_ID = os.getenv("HEALTH_CHECK_USER_ID")
 
+# Базовый адрес источника данных. По умолчанию — настоящий сайт ЦБ.
+# Для тестов можно указать локальный симулятор (web/cbr_sim.py),
+# задав в .env: CBR_BASE_URL=http://127.0.0.1:8080
+# Чтобы вернуться на боевой ЦБ — убрать эту строку из .env.
+CBR_BASE_URL = os.getenv("CBR_BASE_URL", "https://cbr.ru").rstrip("/")
+
 # Скрипт формирования отчёта и маска итогового Excel-файла в корне проекта.
 REPORT_SCRIPT_PATH = PROJECT_ROOT / "Авто-отчет.py"
 REPORT_OUTPUT_GLOB = "Сводные с приростами_*.xlsx"

@@ -4,6 +4,7 @@ import logging
 from datetime import datetime
 from json import JSONDecodeError
 from aiogram import Bot, Router
+from aiogram.types import FSInputFile
 from config import (
     DATES_JSON_PATH,
     USERS_JSON_PATH,
@@ -11,6 +12,7 @@ from config import (
 )
 from services.parse_data import fetch_data
 from services.check_101 import newest_available_101, REPORT_101_PAGE_URL
+from services.report import generate_report
 
 router = Router()
 logger = logging.getLogger(__name__)
@@ -162,14 +164,49 @@ async def check_new_101_report(bot: Bot):
         logger.info("101: нового нет (последний известный %s)", last_seen)
         return
 
-    users_id = await asyncio.to_thread(get_users_id)
+    # Сначала формируем отчёт и только ПОСЛЕ успешной сборки уведомляем
+    # пользователей — уведомление приходит вместе с готовым файлом.
+    # last_seen фиксируем в самом конце: если бот перезапустят во время сборки,
+    # отчёт не потеряется — на следующей проверке всё повторится.
+    logger.info("101: найден новый архив %s, запускаю формирование отчёта", newest)
     human_date = new_record["last_update"]
+    users_id = await asyncio.to_thread(get_users_id)
+
+    try:
+        report_path = await generate_report()
+    except Exception:
+        logger.exception("101: не удалось сформировать отчёт по новому архиву")
+        for user_id in users_id:
+            try:
+                await bot.send_message(
+                    chat_id=user_id,
+                    text=(
+                        "Обнаружена новая 101-форма, но сформировать отчёт автоматически "
+                        "не удалось. Попробуйте позже кнопкой «Сформировать отчет»."
+                    ),
+                )
+            except Exception:
+                logger.exception("101: не смог отправить сообщение об ошибке user_id=%s", user_id)
+        # Фиксируем last_seen, чтобы не повторять неудачную попытку на каждой проверке.
+        data = upsert_record(data, new_record)
+        await asyncio.to_thread(write_json, DATES_JSON_PATH, data)
+        return
+
+    # Отчёт готов — теперь уведомляем и сразу отправляем файл.
+    document = FSInputFile(report_path)
     for user_id in users_id:
-        await bot.send_message(
-            chat_id=user_id,
-            text=f"Появился новый 101-отчёт на ЦБ: {human_date}\n{REPORT_101_PAGE_URL}",
-        )
-        logger.info("101: уведомление отправлено user_id=%s date=%s", user_id, newest)
+        try:
+            await bot.send_message(
+                chat_id=user_id,
+                text=(
+                    f"Появился новый 101-отчёт на ЦБ: {human_date}\n{REPORT_101_PAGE_URL}\n"
+                    "Отчёт сформирован — файл ниже."
+                ),
+            )
+            await bot.send_document(chat_id=user_id, document=document)
+            logger.info("101: уведомление и отчёт отправлены user_id=%s date=%s", user_id, newest)
+        except Exception:
+            logger.exception("101: не смог отправить уведомление/отчёт user_id=%s", user_id)
 
     data = upsert_record(data, new_record)
     await asyncio.to_thread(write_json, DATES_JSON_PATH, data)

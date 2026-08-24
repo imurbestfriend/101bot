@@ -6,12 +6,15 @@ import aiohttp
 import certifi
 from dateutil.relativedelta import relativedelta
 
+from config import CBR_BASE_URL
+
 # Архивы 101-й формы лежат по адресу вида .../101-YYYYMMDD.rar,
-# где дата — 1-е число отчётного месяца.
-REPORT_101_URL_TEMPLATE = "https://cbr.ru/vfs/credit/forms/101-{date}.rar"
+# где дата — 1-е число отчётного месяца. База берётся из CBR_BASE_URL,
+# поэтому для тестов источник можно подменить локальным симулятором.
+REPORT_101_URL_TEMPLATE = CBR_BASE_URL + "/vfs/credit/forms/101-{date}.rar"
 
 # Страница раздела ЦБ, где публикуется отчётность кредитных организаций.
-REPORT_101_PAGE_URL = "https://cbr.ru/banking_sector/otchetnost-kreditnykh-organizaciy/"
+REPORT_101_PAGE_URL = CBR_BASE_URL + "/banking_sector/otchetnost-kreditnykh-organizaciy/"
 
 # Насколько глубоко в прошлое искать самый свежий архив (в месяцах).
 SEARCH_DEPTH_MONTHS = 12
