@@ -16,3 +16,7 @@ dbfread
 py7zz
 requests
 python-dateutil
+
+# Загрузка данных в БД Superset (PostgreSQL)
+sqlalchemy
+psycopg2-binary
