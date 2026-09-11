@@ -18,6 +18,7 @@ import requests
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from dotenv import load_dotenv
+from sqlalchemy import create_engine
 
 # Источник данных: по умолчанию настоящий ЦБ, для тестов можно подменить на
 # локальный симулятор через переменную окружения CBR_BASE_URL (см. web/cbr_sim.py).
@@ -266,8 +267,9 @@ df_final['Применяется'] = df_final['NUM_SC'].astype(str).str[:3].map(
 
 output_folder = Path(save_dir) / "Исходные данные 101" # <------------ Сохранение сырых данных для нас в отдельную папку
 output_folder.mkdir(parents=True, exist_ok=True)
-df_merged.to_csv(output_folder / f"Исходные_данные_{actual_date}.csv", index=False, encoding='utf-8-sig')
-df_final.to_csv(output_folder / f"Активные_счета_{actual_date}.csv", index=False, encoding='utf-8-sig')
+# Пишем один файл с фиксированным именем и перезаписываем его каждый прогон,
+# чтобы датированные CSV не копились бесконечно.
+df_merged.to_csv(output_folder / "Исходные_данные.csv", index=False, encoding='utf-8-sig')
 
 
 # ## Данные ОБС
@@ -337,6 +339,24 @@ df_final = df_final[['REGN', 'NAME_B', 'NUM_SC', 'A_P', 'Применяется'
 df_final.columns = ['Рег.н.', 'Наименование банка', 'Код счета', 'Тип счета', 'Применяется', 'Дата', 'Исх. остаток (руб.)']
 result = df_101[['REGN', 'NAME_B', 'NUM_SC', 'A_P', 'Применяется', 'DT', 'IITG_RUB', 'Корректировка']]
 result.columns = ['Рег.н.', 'Наименование банка', 'Код счета', 'Тип счета', 'Применяется', 'Дата', 'Исх. остаток (руб.)', 'Исх. остаток - корректировка (руб.)']
+
+# Загрузка данных в superset.
+# Строку подключения можно переопределить через .env (SUPERSET_DB_URL); по умолчанию —
+# локальная БД Superset. Загрузка опциональна: если БД недоступна, отчёт всё равно
+# досчитывается и сохраняется в xlsx.
+market['Дата'] = market['Дата'].astype(str)
+res_db = result.merge(market, on='Дата', how='left')
+res_db['Дата'] = pd.to_datetime(res_db['Дата'])
+try:
+    engine = create_engine(
+        os.getenv("SUPERSET_DB_URL", "postgresql://superset:superset@localhost:5432/superset")
+    )
+    try:
+        res_db.to_sql('test_101', con=engine, if_exists='replace', index=False)
+    finally:
+        engine.dispose()
+except Exception as e:
+    print(f"Ошибка при загрузке данных: {e}")
 
 # ### РЫНОК ПО ДАННЫМ 101 БЕЗ КОРРЕКТИРОВКИ
 res_market_2 = result.groupby('Дата').agg({'Исх. остаток (руб.)': 'sum'}).reset_index()
